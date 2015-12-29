@@ -1,10 +1,12 @@
-function ReactiveStore(constructor){
+function ReActiveStore(constructor){
   this.data = Object()
   this.paramKey = function(url, params){
+    Object.keys(params).sort().map(function(key){
+      return params[key]
+    })
     return md5(JSON.stringify(params))
   }
   this.find = function(params, callback){
-    params = this.params.find(params)
     key = this.paramKey(this.collectionUrl, params)
     if(this.requestQue[key] == null){
       this.request(key, "find", params)
@@ -16,7 +18,6 @@ function ReactiveStore(constructor){
   }
   this.requestQue = Object()
   this.findOne = function(params, callback){
-    params = this.params.findOne(params)
     key = this.paramKey(this.memberUrl, params)
     if(this.requestQue[key] == null){
       this.request(key, "findOne", params)
@@ -26,18 +27,6 @@ function ReactiveStore(constructor){
     this.on(key, callback)
     return this;
   }
-  this.params = {
-    collection: function(params){
-      return {};
-    },
-    member: function(params){
-      return {id: params.id};
-    }
-  }
-  this.params.find = this.params.collection
-  this.params.findOne = this.params.member
-  this.params.delete = this.params.member
-  this.params.update = this.params.member
 
   this.resources = function(url){
     this.collectionUrl = url
@@ -64,25 +53,25 @@ function ReactiveStore(constructor){
   }
   this.delete = function(params){
     constructor = this
-    params = this.params.delete(params)
     key = this.paramKey(this.memberUrl, params)
     this.ajax("delete", this.memberUrl, params, function(){
       constructor.trigger(key + " delete")
     })
     return this;
   }
-  this.update = function(params){
+  this.update = function(findParams, params){
     constructor = this
-    params = this.params.update(params)
-    key = this.paramKey(this.memberUrl, params)
-    this.ajax("put", this.memberUrl, params, function(){
-      constructor.trigger(key + " put")
+    key = this.paramKey(this.memberUrl, findParams)
+    params = $.extend({}, findParams, params)
+    this.ajax("put", this.memberUrl, params, function(response){
+      constructor.trigger(key + " put", response)
     })
     return this;
   }
   this.ajax = function(method, url, params, callback){
     constructor = this;
     processedUrl = this.processUrl(url, params)
+    console.log(processedUrl)
     $[method](processedUrl.url, processedUrl.params).then(function(response) {
       if(callback){
         callback(response)
