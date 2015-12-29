@@ -47,8 +47,7 @@
       UserStore.find({}, function(users){
         if (this.isMounted()) {
           this.setState({
-            username: lastGist.owner.login,
-            lastGistUrl: lastGist.html_url
+            users: users
           });
         }
       }.bind(this))
