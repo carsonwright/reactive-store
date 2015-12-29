@@ -38,33 +38,33 @@
     // Will automatically trigger the findOne({id: 10}) callback and pass in undefined for the user
 ## Suggested React Use
     var UserList = React.createClass({
-    getInitialState: function() {
-      return {
-        users: []
-      };
-    },
-    componentDidMount: function() {
-      UserStore.find({}, function(users){
-        if (this.isMounted()) {
-          this.setState({
-            users: users
-          });
+        getInitialState: function() {
+          return {
+            users: []
+          };
+        },
+        componentDidMount: function() {
+          UserStore.find({}, function(users){
+            if (this.isMounted()) {
+              this.setState({
+                users: users
+              });
+            }
+          }.bind(this))
+        },
+      
+        render: function() {
+          return (
+            <div>
+              {this.state.users.map(function(user){
+                (
+                  <a href={user.id}>{user.first_name} {user.last_name}</a>
+                )
+              }
+            </div>
+          );
         }
-      }.bind(this))
-    },
-  
-    render: function() {
-      return (
-        <div>
-          {this.state.users.map(function(user){
-            (
-              <a href={user.id}>{user.first_name} {user.last_name}</a>
-            )
-          }
-        </div>
-      );
-    }
-  });
+    });
 
 ## Url Params
 Params are parsed into the url, so if you have a url that contains :organization_id and pass in {organization_id: 10}
