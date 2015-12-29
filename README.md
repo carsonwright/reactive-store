@@ -4,7 +4,7 @@
     UserStore.resources("/users")
 
 ## Use Store
-### Find
+#### Find
     UserStore.find({}, function(data){
       console.log(data)
     })
@@ -16,13 +16,13 @@
     // Since find has already been run above this code will not fetch data but will get it from the store
     // All data is recorded under UserStore.data[UserStore.paramKey(url, params)]
 
-### FindOne
+#### FindOne
     UserStore.findOne({id: 10}, function(user){
       console.log(user)
     })
     // Will return 1 user with the id 10 and will use your member url 
     // which by default is your your resource url + "/:id"
-### Create
+#### Create
     UserStore.find({first_name: "john"}, function(data){
       console.log(data)
     })
@@ -30,7 +30,7 @@
     
     UserStore.create({first_name: "John", last_name: "doe"})
     // will automatically trigger the find for first_name: "john", which will fetch the data and rerun the call back
-### Delete
+#### Delete
     UserStore.findOne({id: 10}, function(user){
       console.log(user)
     })
