@@ -1,0 +1,32 @@
+{
+  "name": "reactive-store",
+  "version": "1.0.0",
+  "description": "A library for querying and subscribing to basic crub (Specifically around react)",
+  "scripts": {
+    "test": "gulp test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/carsonwright/reactive-store.git"
+  },
+  "keywords": [
+    "react",
+    "flux",
+    "store",
+    "reactive"
+  ],
+  "author": "Carson Wright",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/carsonwright/reactive-store/issues"
+  },
+  "homepage": "https://github.com/carsonwright/reactive-store#readme",
+  "devDependencies": {
+    "gulp-concat": "^2.6.0",
+    "gulp-rename": "^1.2.2",
+    "gulp-uglify": "^1.5.1"
+  },
+  "dependencies": {
+    "gulp": "^3.9.0"
+  }
+}

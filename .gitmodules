@@ -1,0 +1,6 @@
+[submodule "observable"]
+	path = observable
+	url = git@github.com:carsonwright/observable.git
+[submodule "src/observable"]
+	path = src/observable
+	url = git@github.com:carsonwright/observable.git
