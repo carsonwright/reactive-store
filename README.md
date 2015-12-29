@@ -25,31 +25,36 @@
 
 ## Suggested React Use
     var UserList = React.createClass({
-    getInitialState: function() {
-      return {
-        users: []
-      };
-    },
-    componentDidMount: function() {
-      UserStore.find({}, function(users){
-        if (this.isMounted()) {
-          this.setState({
-            username: lastGist.owner.login,
-            lastGistUrl: lastGist.html_url
-          });
+        getInitialState: function() {
+          return {
+            users: []
+          };
+        },
+        componentDidMount: function() {
+          UserStore.find({}, function(users){
+            if (this.isMounted()) {
+              this.setState({
+                username: lastGist.owner.login,
+                lastGistUrl: lastGist.html_url
+              });
+            }
+          }.bind(this))
+        },
+      
+        render: function() {
+          return (
+            <div>
+              {this.state.users.map(function(user){
+                (
+                  <a href={user.id}>{user.first_name} {user.last_name}</a>
+                )
+              }
+            </div>
+          );
         }
-      }.bind(this))
-    },
-  
-    render: function() {
-      return (
-        <div>
-          {this.state.users.map(function(user){
-            (
-              <a href={user.id}>{user.first_name} {user.last_name}</a>
-            )
-          }
-        </div>
-      );
-    }
-  });
+      });
+
+## Manual Urls
+        UserStore = new ReActiveStore()
+        UserStore.memberUrl = "/users/:id"
+        UserStore.collectionUrl = "/users"
