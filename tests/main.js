@@ -4,7 +4,7 @@ QUnit.test("Store.all", function( assert ) {
   $.mockjax({
     method: "get",
     url: "/users",
-    params: "",
+    params: {},
     responseText: {
       status: "success",
       users: [
@@ -31,7 +31,7 @@ QUnit.test( "Store.find", function( assert ) {
       last_name: "doe"
     }
   });
-  UserStore.find({id: 10}).then(function(response){
+  UserStore.find(10).then(function(response){
       assert.ok(response.first_name == "john")
       done()
   })
@@ -71,7 +71,7 @@ QUnit.test( "Store.destroy", function( assert ) {
       ]
     }
   });
-  UserStore.destroy({id: 10}).then(function(response){
+  UserStore.destroy(10).then(function(response){
       assert.ok(response.status == "success")
       done()
   })
@@ -91,7 +91,7 @@ QUnit.test( "Store.update", function( assert ) {
       ]
     }
   });
-  UserStore.update({id: 10}, {first_name: "Carson", last_name: "Wright"}).then(function(response){
+  UserStore.update(10, {first_name: "Carson", last_name: "Wright"}).then(function(response){
       assert.ok(response.status == "success")
       done()
   })

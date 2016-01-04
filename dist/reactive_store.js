@@ -435,6 +435,9 @@ function RemoteStore(resourceUrl){
 
   this.setRoute = function(key, method, url){
     this.routes[key] = {method: method.toUpperCase(), url: url}
+  }
+  this.setAction = function(key, method, url){
+    this.setRoute(key, method, url)
     if(method.toLowerCase() == "put"){
       this[key] = function(target, params){
         var params = $.extend({}, params, target)
@@ -446,7 +449,7 @@ function RemoteStore(resourceUrl){
       }
     }
   }
-  
+
   this.setRoute("create", "POST", this.resourceUrl);
   this.setRoute("where", "GET", this.resourceUrl);
   this.setRoute("find", "GET", this.memberUrl);
