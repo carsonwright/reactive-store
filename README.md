@@ -1,7 +1,6 @@
 # RemoteStore
 ## Setup Store
-    UserStore = new RemoteStore()
-    UserStore.resources("/users")
+    UserStore = new RemoteStore("/users")
 
 ## Use Store
 #### All
