@@ -85,12 +85,12 @@ the :organization_id will be replaced by your param.
     UserStore.setRoute("/organizations/:organization_id/users")
     
     UserStore.find({organization_id: 10}).then(function(users){
-        console.log(users
+        console.log(users)
     })
 
 ## Urls
-    UserStore.find({first_name: "john"})                        // GET      /users?first_name="john"
-    UserStore.findOne({id: 10})                                 // GET      /users/10
+    UserStore.where({first_name: "john"})                        // GET      /users?first_name="john"
+    UserStore.find({id: 10})                                 // GET      /users/10
     UserStore.create({{first_name: "John", last_name: "doe"}})  // POST     /users {first_name: "john", last_name: "doe"}
     UserStore.update({id: 10}, {first_name: "Jimmy"})           // PUT      /users/10
     UserStore.delete({id: 10})                                  // DELETE   /users/10
