@@ -95,8 +95,8 @@ the :organization_id will be replaced by your param.
     })
 
 ## Urls
-    UserStore.where({first_name: "john"})                        // GET      /users?first_name="john"
-    UserStore.find({id: 10})                                 // GET      /users/10
+    UserStore.where({first_name: "john"})                       // GET      /users?first_name="john"
+    UserStore.find(10)                                          // GET      /users/10
     UserStore.create({{first_name: "John", last_name: "doe"}})  // POST     /users {first_name: "john", last_name: "doe"}
     UserStore.update({id: 10}, {first_name: "Jimmy"})           // PUT      /users/10
     UserStore.delete({id: 10})                                  // DELETE   /users/10
