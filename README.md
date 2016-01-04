@@ -1,4 +1,4 @@
-# ReActiveStore
+# RemoteStore
 ## Setup Store
     UserStore = new RemoteStore()
     UserStore.resources("/users")
