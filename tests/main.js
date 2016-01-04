@@ -116,3 +116,21 @@ QUnit.test( "Store.create", function( assert ) {
       done()
   })
 });
+
+QUnit.test( "Store.customMethod", function( assert ) {
+  done = assert.async()
+  UserStore =  new RemoteStore("/users")
+  UserStore.setAction("customMethod", "post", "/users/:custom_id/custom_method")
+  $.mockjax({
+    method: "post",
+    url: "/users/10/custom_method",
+    params: {first_name: "John"},
+    responseText: {
+      status: "success"
+    }
+  });
+  UserStore.customMethod({custom_id: 10}).then(function(response){
+      assert.ok(response.status == "success")
+      done()
+  })
+});
