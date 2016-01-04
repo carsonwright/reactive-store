@@ -88,9 +88,9 @@
 Params are parsed into the url, so if you have a url that contains :organization_id and pass in {organization_id: 10}
 the :organization_id will be replaced by your param.
     UserStore = new ReActiveStore("/organizations")
-    UserStore.setRoute("/organizations/:organization_id/users")
+    UserStore.setAction("organizationUsers", "/organizations/:organization_id/users")
     
-    UserStore.find({organization_id: 10}).then(function(users){
+    UserStore.organizationUsers({organization_id: 10}).then(function(users){
         console.log(users)
     })
 
