@@ -10,7 +10,7 @@
     // will fetch all users and log them using your resource url "/users"
 
 #### Find    
-    UserStore.find({id: 10}).then(function(data){
+    UserStore.find(10).then(function(data){
       console.log(data.length)
     })
 
@@ -28,9 +28,15 @@
     })
 
 #### Destroy
-    UserStore.destroy({id: 10}).then(function(user){
+    UserStore.destroy(10).then(function(user){
       console.log(user)
     })
+    
+#### Update
+    UserStore.update(10, {first_name: "Not John", last_name: "Not Doe"}).then(function(user){
+      console.log(user)
+    })
+
 ### Observable
     UserStore.on("create update", function(){
       console.log("triggered create or update")
