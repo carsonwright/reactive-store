@@ -5,7 +5,7 @@ var rename = require('gulp-rename');
 var qunit = require('gulp-qunit');
 
 gulp.task('script', function() {
-  return gulp.src(['./node_modules/blueimp-md5/js/md5.js','./src/observable/*.js', './src/*.js'])
+  return gulp.src(['./src/observable/*.js', './src/*.js'])
     .pipe(concat('reactive_store.js'))
     .pipe(gulp.dest('dist'));
 });
