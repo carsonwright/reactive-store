@@ -1,90 +1,26 @@
-function ReActiveStore(constructor){
-  this.data = Object()
-  this.paramKey = function(url, params){
-    Object.keys(params).sort().map(function(key){
-      return params[key]
-    })
-    return md5(JSON.stringify(params))
-  }
-  this.find = function(params, callback){
-    key = this.paramKey(this.collectionUrl, params)
-    if(this.requestQue[key] == null){
-      this.request(key, "find", params)
-    }else if(this.data[key]){
-      callback(this.data[key])
-    }
-    this.on(key, callback)
-    return this;
-  }
-  this.requestQue = Object()
-  this.findOne = function(params, callback){
-    key = this.paramKey(this.memberUrl, params)
-    if(this.requestQue[key] == null){
-      this.request(key, "findOne", params)
-    }else if(this.data[key]){
-      callback(this.data[key])
-    }
-    this.on(key, callback)
-    return this;
-  }
-
-  this.resources = function(url){
-    this.collectionUrl = url
-    this.memberUrl = url + "/:id"
-  }
-
-  this.request = function(key, type, params){
-    constructor = this
-    this.requestQue[key] = {
-      key: key,
-      type: type,
-      params: params,
-      fetch: function(){
-        constructor["fetch" + type.replace("find", "")](this.key, this.params) // Replace find with fetch i.e. findOne = fetchOne or find = fetch
-      }
-    }
-    this.requestQue[key].fetch()
-    return this;
-  }
+function RemoteStore(resourceUrl){
   this.create = function(params){
-    params = this.params.create(params)
-    this.ajax("post", this.collectionUrl, params)
-    return this;
+    return this.ajax("create", params)
   }
-  this.delete = function(params){
-    constructor = this
-    key = this.paramKey(this.memberUrl, params)
-    this.ajax("delete", this.memberUrl, params, function(){
-      constructor.trigger(key + " delete")
-    })
-    return this;
+  this.where = function(params){
+    return this.ajax("where", params)
   }
-  this.update = function(findParams, params){
-    constructor = this
-    key = this.paramKey(this.memberUrl, findParams)
-    params = $.extend({}, findParams, params)
-    this.ajax("put", this.memberUrl, params, function(response){
-      constructor.trigger(key + " put", response)
-    })
-    return this;
+  this.find = function(params){
+    return this.ajax("find", {id: params})
   }
-  this.ajax = function(method, url, params, callback){
-    constructor = this;
-    processedUrl = this.processUrl(url, params)
-    console.log(processedUrl)
-    $[method](processedUrl.url, processedUrl.params).then(function(response) {
-      if(callback){
-        callback(response)
-      }else{
-        constructor.trigger(method, response);
-      }
-    }).fail(function(response) {
-      console.log("Error");
-      console.log(response);
-    });
+  this.update = function(id, params){
+    params.id = id
+    return this.ajax("update", params)
+  }
+  this.destroy = function(id){
+    var params = {id: id}
+    return this.ajax("destroy", params) 
+  }
+  this.all = function(){
+    return this.where({})
   }
   this.processUrl = function(url, params){
-    sendParams = Object()
+    var sendParams = Object()
     Object.keys(params).forEach(function(key){
       if(url.indexOf(":" + key) != -1){
         url = url.replace(":"+ key, params[key])
@@ -95,30 +31,45 @@ function ReActiveStore(constructor){
     
     return {url: url, params: sendParams}
   }
-  this.fetchOne = function(key, params){
-    that = this
-    this.ajax("get", this.memberUrl, params, function(response){
-      that.data[key] = response
-      that.trigger(key, response)
-    })
-  }
-  this.fetch = function(key, params){
-    that = this
-    this.ajax("get", this.collectionUrl, params, function(response){
-      that.data[key] = response
-      that.trigger(key, response)
-    })
-  }
+  this.routes = Object()
+  this.resourceUrl = resourceUrl
+  this.memberUrl = resourceUrl + "/:id"
 
-  var store = Observable(this)
-  store.on("post put update delete", function(){
-    Object.keys(this.requestQue).forEach(function(key){
-      fetcher = store.requestQue[key]
-      if(fetcher.type == "find"){
-        fetcher.fetch()
+  this.setRoute = function(key, method, url){
+    this.routes[key] = {method: method.toUpperCase(), url: url}
+    if(method.toLowerCase() == "put"){
+      this[key] = function(target, params){
+        var params = $.extend({}, params, target)
+        return this.ajax(key, params)
       }
-      
+    }else{
+      this[key] = function(params){
+        return this.ajax(key, params)
+      }
+    }
+  }
+  
+  this.setRoute("create", "POST", this.resourceUrl);
+  this.setRoute("where", "GET", this.resourceUrl);
+  this.setRoute("find", "GET", this.memberUrl);
+  this.setRoute("destroy", "DELETE", this.memberUrl);
+  this.setRoute("update", "PUT", this.memberUrl);
+
+  this.ajax = function(routeName, opts){
+    var route = this.routes[routeName]
+    var urlAndParams = this.processUrl(route.url, opts)
+    var promise = $.Deferred()
+    var constructor = this
+    $.ajax({
+      method: route.method,
+      url: urlAndParams.url,
+      data: urlAndParams.params
+    }).then(function(data){
+      constructor.trigger(routeName + " " + route.method.toLowerCase())
+      promise.resolve(data)
     })
-  })
-  return store;
+    return promise
+  }
+  Observable(this)
+  return this
 }

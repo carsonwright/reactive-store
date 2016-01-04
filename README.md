@@ -1,37 +1,35 @@
 # ReActiveStore
 ## Setup Store
-    UserStore = new ReActiveStore()
+    UserStore = new RemoteStore()
     UserStore.resources("/users")
 
 ## Use Store
-#### Find
-    UserStore.find({}, function(data){
+#### All
+    UserStore.all().then(function(data){
       console.log(data)
     })
     // will fetch all users and log them using your resource url "/users"
-    
-    UserStore.find({}, function(data){
+
+#### Find    
+    UserStore.find({id: 10}).then(function(data){
       console.log(data.length)
     })
-    // Since find has already been run above this code will not fetch data but will get it from the store
-    // All data is recorded under UserStore.data[UserStore.paramKey(url, params)]
 
-#### FindOne
-    UserStore.findOne({id: 10}, function(user){
-      console.log(user)
-    })
     // Will return 1 user with the id 10 and will use your member url 
     // which by default is your your resource url + "/:id"
-#### Create
-    UserStore.find({first_name: "john"}, function(data){
-      console.log(data)
+
+#### Where
+    UserStore.where({first_name: "john"}).then(function(user){
+      console.log(user)
     })
-    // will fetch the data but not return anything unless there is already a user with the first name john
-    
-    UserStore.create({first_name: "John", last_name: "doe"})
-    // will automatically trigger the find for first_name: "john", which will fetch the data and rerun the call back
-#### Delete
-    UserStore.findOne({id: 10}, function(user){
+
+#### Create
+    UserStore.create({first_name: "John", last_name: "doe"}).then(function(){
+
+    })
+
+#### Destroy
+    UserStore.destroy({id: 10}).then(function(user){
       console.log(user)
     })
     UserStore.delete({id: 10})
@@ -43,16 +41,25 @@
             users: []
           };
         },
+        params: {},
         componentDidMount: function() {
-          UserStore.find({}, function(users){
-            if (this.isMounted()) {
-              this.setState({
-                users: users
-              });
-            }
-          }.bind(this))
+          component = this;
+          // Reactive Store
+          UserStore.on("create update destroy").then(function(){
+            component.fetch()
+          })
         },
-      
+        fetch: function(){
+          var component = this;
+          UserStore.where(this.params).then(function(users){
+            component.setState({
+              users: users
+            });
+          })
+        },
+        changeQuery: function(){
+          this.params = {laste_name: "Doe"}
+        },
         render: function() {
           return (
             <div>
@@ -61,6 +68,7 @@
                   <a href={user.id}>{user.first_name} {user.last_name}</a>
                 )
               }
+              <a href="#" onClick={this.changeQuery}>Last Name Doe</a>
             </div>
           );
         }
@@ -69,17 +77,12 @@
 ## Url Params
 Params are parsed into the url, so if you have a url that contains :organization_id and pass in {organization_id: 10}
 the :organization_id will be replaced by your param.
-    UserStore = new ReActiveStore()
-    UserStore.resources("/organizations/:organization_id/users")
+    UserStore = new ReActiveStore("/organizations")
+    UserStore.setRoute("/organizations/:organization_id/users")
     
-    UserStore.find({organization_id: 10}, function(users){
+    UserStore.find({organization_id: 10}).then(function(users){
         console.log(users
     })
-    
-    UserStore.findOne({organization_id: 10, id:20}, function(user){
-        console.log(user)
-    })
-        
 
 ## Urls
     UserStore.find({first_name: "john"})                        // GET      /users?first_name="john"
