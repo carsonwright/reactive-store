@@ -31,8 +31,13 @@
     UserStore.destroy({id: 10}).then(function(user){
       console.log(user)
     })
-    UserStore.delete({id: 10})
-    // Will automatically trigger the findOne({id: 10}) callback and pass in undefined for the user
+### Observable
+    UserStore.on("create update", function(){
+      console.log("triggered create or update")
+    })
+    
+    UserStore.trigger("create") // Or create using UserStore.create({first_name: "Carson", last_name: "Wright"})
+    
 ## Suggested React Use
     var UserList = React.createClass({
         getInitialState: function() {
